@@ -31,9 +31,11 @@ function preload() {
     this.load.image('enemy', 'images/enemy.png');
     this.load.image('bullet', 'images/bullet.png');
 
+    this.load.spritesheet('enemyes', 'images/enemyes.png', { frameWidth: 66, frameHeight: 47 });
+
 }
 
-function create() {
+function create() {    
 
     let Bullet = new Phaser.Class({
 
@@ -88,14 +90,38 @@ function create() {
     this.bg_01 = this.add.tileSprite(512, 288, 1024, 576, 'layer_01');
     
     this.player = this.physics.add.sprite(50, 288, 'player');
-    this.enemy = this.physics.add.sprite(300, 288, 'enemy');
+    
+    // enemyes = this.physics.add.group({
+    //     key: 'enemy',
+    //     repeat: 11,
+    //     setXY: { x: 120, y: 600, stepX: 70, stepY: -50}
+    // });     
 
-    this.physics.add.collider(this.player, this.enemy);
-    this.physics.add.overlap(this.player, this.enemy, killPlayer, null, this);
 
-    this.physics.add.collider([bullets], this.enemy);
-    this.physics.add.overlap([bullets], this.enemy, killEnemy, null, this);
 
+    //////////////////////
+
+    for (let i = 0; i<10; i++) {
+        
+    }
+
+    this.enemyes = this.physics.add.sprite(1024, 200, 'enemyes');
+
+    this.anims.create({
+        key: 'amam',
+        frames: this.anims.generateFrameNumbers('enemyes', { start: 1, end: 3 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    this.enemyes.anims.play('amam');
+
+    this.physics.add.collider(this.player, this.enemyes);
+    this.physics.add.overlap(this.player, this.enemyes, killPlayer, null, this);
+
+    this.physics.add.collider(bullets, this.enemyes);
+    this.physics.add.overlap(bullets, this.enemyes, killEnemy, null, this);
+    
 }
 
 function update() {
@@ -109,6 +135,11 @@ function update() {
     this.bg_02.tilePositionX += 2;
     this.bg_01.tilePositionX += 3;    
     
+    this.enemyes.x -= 3;
+    if (this.enemyes.x < 0) {
+        this.enemyes.x = 1024;
+    }
+
     if (this.cursors.left.isDown) {
         this.player.x -= 2;
     }
@@ -142,8 +173,8 @@ function killEnemy(enemy, bullet) {
     bullet.setActive(false);
     bullet.setVisible(false);
 
-    this.enemy.rotation += 0.1;
-    this.enemy.body.setVelocityY(220);
+    enemy.rotation += 0.1;
+    enemy.body.setVelocityY(220);
 
     console.log('kill enemy!');
 }
