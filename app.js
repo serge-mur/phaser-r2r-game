@@ -31,16 +31,25 @@ function preload() {
     this.load.image('enemy', 'images/enemy.png')
     this.load.image('bullet', 'images/bullet.png')
 
-    this.load.spritesheet('enemyes', 'images/enemyes.png', { frameWidth: 66, frameHeight: 47 })
+    this.load.spritesheet('enemies', 'images/enemies.png', { frameWidth: 66, frameHeight: 47 })
 
 }
 
 function create() {    
 
+    // enemies animation
+    this.anims.create({
+        key: 'amam',
+        frames: this.anims.generateFrameNumbers('enemies', { start: 0, end: 3 }),
+        frameRate: 10,
+        repeat: -1
+    })
+
     class Enemy extends  Phaser.GameObjects.Sprite {
         constructor (scene) {
-            super(scene, 0, 0, 'enemyes')
+            super(scene, 0, 0, 'enemies')
             this.speed = Phaser.Math.Between(3.2, 5.8)
+            this.anims.play('amam')
         }
         startOnPath() {
             this.setPosition(1024, Phaser.Math.Between(20, 556))
@@ -105,18 +114,6 @@ function create() {
     // add player
     this.player = this.physics.add.sprite(50, 288, 'player')
     
-    // del
-    this.enemyes = this.physics.add.sprite(1024, 200, 'enemyes')
-
-    // enemies animation
-    this.anims.create({
-        key: 'amam',
-        frames: this.anims.generateFrameNumbers('enemyes', { start: 0, end: 3 }),
-        frameRate: 10,
-        repeat: -1
-    })
-    this.enemyes.anims.play('amam')
-
     // collision player-enemy
     this.physics.add.collider(this.player, enemies)
     this.physics.add.overlap(this.player, enemies, killPlayer, null, this)
@@ -138,12 +135,6 @@ function update(time, delta) {
     this.bg_02.tilePositionX += 2
     this.bg_01.tilePositionX += 3    
     
-    // del
-    this.enemyes.x -= 3
-    if (this.enemyes.x < 0) {
-        this.enemyes.x = 1024
-    }
-
     // movies player
     if (this.cursors.left.isDown) {
         this.player.x -= 2
